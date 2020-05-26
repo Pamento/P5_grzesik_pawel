@@ -6,6 +6,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.cleanup.todoc.database.dao.ProjectDao;
+import com.cleanup.todoc.database.dao.TaskDao;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,7 +14,8 @@ import java.util.concurrent.Executors;
 public abstract class TodocDatabase extends RoomDatabase {
 
     // --- DAO ---
-    abstract ProjectDao projectDao();
+    public abstract ProjectDao projectDao();
+    public abstract TaskDao mTaskDao();
 
     // --- SINGLETON ---
     // marking the instance as volatile to ensure atomic access to the variable
