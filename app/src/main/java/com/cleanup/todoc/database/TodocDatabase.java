@@ -2,15 +2,19 @@ package com.cleanup.todoc.database;
 
 import android.content.Context;
 
+import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.cleanup.todoc.database.dao.ProjectDao;
 import com.cleanup.todoc.database.dao.TaskDao;
+import com.cleanup.todoc.model.Project;
+import com.cleanup.todoc.model.Task;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Database(entities = {Project.class, Task.class},version = 1, exportSchema = false)
 public abstract class TodocDatabase extends RoomDatabase {
 
     // --- DAO ---
