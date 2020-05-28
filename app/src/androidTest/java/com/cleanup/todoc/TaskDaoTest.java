@@ -32,8 +32,8 @@ public class TaskDaoTest {
     //private static int PROJECT_COLOR = 0x7DD0D7;
     private static Project PROJECT_FOR_TESTS = new Project(PROJECT_ID, "Projet Tartampion", 0xFFEADAD1);
     private static Task NEW_TASK_ONE = new Task(1L, PROJECT_ID, "Task one", System.currentTimeMillis());
-    private static Task NEW_TASK_TWO = new Task(1L, PROJECT_ID, "Task two", System.currentTimeMillis());
-    private static Task NEW_TASK_TREE = new Task(1L, PROJECT_ID, "Task one", System.currentTimeMillis());
+    private static Task NEW_TASK_TWO = new Task(2L, PROJECT_ID, "Task two", System.currentTimeMillis());
+    private static Task NEW_TASK_TREE = new Task(3L, PROJECT_ID, "Task one", System.currentTimeMillis());
 
     @Rule
     public InstantTaskExecutorRule mInstantTaskExecutorRule = new InstantTaskExecutorRule();

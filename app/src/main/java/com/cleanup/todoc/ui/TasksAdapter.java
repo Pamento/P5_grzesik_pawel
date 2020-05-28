@@ -87,38 +87,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
      *
      * @author Gaëtan HERFRAY
      */
-    class TaskViewHolder extends RecyclerView.ViewHolder {
-        /**
-         * The circle icon showing the color of the project
-         */
+    static class TaskViewHolder extends RecyclerView.ViewHolder {
+
         private final AppCompatImageView imgProject;
-
-        /**
-         * The TextView displaying the name of the task
-         */
         private final TextView lblTaskName;
-
-        /**
-         * The TextView displaying the name of the project
-         */
         private final TextView lblProjectName;
-
-        /**
-         * The delete icon
-         */
         private final AppCompatImageView imgDelete;
-
-        /**
-         * The listener for when a task needs to be deleted
-         */
         private final DeleteTaskListener deleteTaskListener;
 
-        /**
-         * Instantiates a new TaskViewHolder.
-         *
-         * @param itemView the view of the task item
-         * @param deleteTaskListener the listener for when a task needs to be deleted to set
-         */
         TaskViewHolder(@NonNull View itemView, @NonNull DeleteTaskListener deleteTaskListener) {
             super(itemView);
 
@@ -149,14 +125,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             lblTaskName.setText(task.getName());
             imgDelete.setTag(task);
 
-            final Project taskProject = task.getProject();
-            if (taskProject != null) {
-                imgProject.setSupportImageTintList(ColorStateList.valueOf(taskProject.getColor()));
-                lblProjectName.setText(taskProject.getName());
-            } else {
-                imgProject.setVisibility(View.INVISIBLE);
-                lblProjectName.setText("");
-            }
+//            final Project taskProject = task.getProject();
+//            if (taskProject != null) {
+//                imgProject.setSupportImageTintList(ColorStateList.valueOf(taskProject.getColor()));
+//                lblProjectName.setText(taskProject.getName());
+//            } else {
+//                imgProject.setVisibility(View.INVISIBLE);
+//                lblProjectName.setText("");
+//            }
 
         }
     }

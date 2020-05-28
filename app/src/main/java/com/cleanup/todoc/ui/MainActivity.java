@@ -2,12 +2,14 @@ package com.cleanup.todoc.ui;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,49 +34,29 @@ import java.util.Date;
  * @author Gaëtan HERFRAY
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
-    /**
-     * List of all projects available in the application
-     */
-    private final Project[] allProjects = Project.getAllProjects();
+    private final Project[] allProjects = new Project[]{
+                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
+                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
+                new Project(3L, "Projet Circus", 0xFFA3CED2),
+        };
 
-    /**
-     * List of all current tasks of the application
-     */
     @NonNull
     private final ArrayList<Task> tasks = new ArrayList<>();
 
-    /**
-     * The adapter which handles the list of tasks
-     */
     private final TasksAdapter adapter = new TasksAdapter(tasks, this);
 
-    /**
-     * The sort method to be used to display tasks
-     */
     @NonNull
     private SortMethod sortMethod = SortMethod.NONE;
 
-    /**
-     * Dialog to create a new task
-     */
     @Nullable
     public AlertDialog dialog = null;
 
-    /**
-     * EditText that allows user to set the name of a task
-     */
     @Nullable
     private EditText dialogEditText = null;
 
-    /**
-     * Spinner that allows the user to associate a project to a task
-     */
     @Nullable
     private Spinner dialogSpinner = null;
 
-    /**
-     * The RecyclerView which displays the list of tasks
-     */
     // Suppress warning is safe because variable is initialized in onCreate
     @SuppressWarnings("NullableProblems")
     @NonNull
@@ -178,11 +160,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 dialogInterface.dismiss();
             }
             // If name has been set, but project has not been set (this should never occur)
-            else{
+            else {
                 dialogInterface.dismiss();
             }
         }
-        // If dialog is aloready closed
+        // If dialog is already closed
         else {
             dialogInterface.dismiss();
         }
@@ -288,36 +270,18 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Sets the data of the Spinner with projects to associate to a new task
      */
     private void populateDialogSpinner() {
-        final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, allProjects);
+        final ArrayAdapter adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_spinner_item, allProjects);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         if (dialogSpinner != null) {
             dialogSpinner.setAdapter(adapter);
         }
     }
 
-    /**
-     * List of all possible sort methods for task
-     */
     private enum SortMethod {
-        /**
-         * Sort alphabetical by name
-         */
         ALPHABETICAL,
-        /**
-         * Inverted sort alphabetical by name
-         */
         ALPHABETICAL_INVERTED,
-        /**
-         * Lastly created first
-         */
         RECENT_FIRST,
-        /**
-         * First created first
-         */
         OLD_FIRST,
-        /**
-         * No sort
-         */
         NONE
     }
 }
