@@ -29,7 +29,6 @@ public class TaskDaoTest {
     private volatile TodocDatabase mDatabase;
 
     private static long PROJECT_ID = 1L;
-    //private static int PROJECT_COLOR = 0x7DD0D7;
     private static Project PROJECT_FOR_TESTS = new Project(PROJECT_ID, "Projet Tartampion", 0xFFEADAD1);
     private static Task NEW_TASK_ONE = new Task(1L, PROJECT_ID, "Task one", System.currentTimeMillis());
     private static Task NEW_TASK_TWO = new Task(2L, PROJECT_ID, "Task two", System.currentTimeMillis());
@@ -74,16 +73,6 @@ public class TaskDaoTest {
         List<Task> tasks = LiveDataTestUtils.getValue(mDatabase.mTaskDao().getTasks(PROJECT_ID));
         assertEquals(3,tasks.size());
     }
-
-//    @Test
-//    public void insertAndUpdateTask() throws InterruptedException {
-//        mDatabase.projectDao().createProject(PROJECT_FOR_TESTS);
-//        mDatabase.mTaskDao().insertTask(NEW_TASK_ONE);
-//        Task taskFromDatabase = LiveDataTestUtils.getValue(mDatabase.mTaskDao().getTasks(PROJECT_ID)).get(0);
-//        taskFromDatabase.setName("New Task name");
-//        List<Task> tasks = LiveDataTestUtils.getValue(mDatabase.mTaskDao().getTasks(PROJECT_ID));
-//        assertTrue(tasks.size() == 1 && tasks.get(0).getName().equals("New Task name"));
-//    }
 
     @Test
     public void insertAndDeleteTask() throws InterruptedException {
