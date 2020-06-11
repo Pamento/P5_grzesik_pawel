@@ -4,18 +4,20 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.cleanup.todoc.model.Project;
+import com.cleanup.todoc.model.Task;
 import com.cleanup.todoc.repositories.ProjectRepository;
 import com.cleanup.todoc.repositories.TaskRepository;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
-public class MainActivityViewModel extends ViewModel {
+public class MainViewModel extends ViewModel {
     private final ProjectRepository mProjectRepository;
     private final TaskRepository mTaskRepository;
     private final Executor mExecutor;
-    private LiveData<Project> mProjects;
+    private LiveData<List<Project>> mProjects;
 
-    public MainActivityViewModel(ProjectRepository projectRepository, TaskRepository taskRepository, Executor executor) {
+    public MainViewModel(ProjectRepository projectRepository, TaskRepository taskRepository, Executor executor) {
         mProjectRepository = projectRepository;
         mTaskRepository = taskRepository;
         mExecutor = executor;
@@ -28,8 +30,16 @@ public class MainActivityViewModel extends ViewModel {
         mProjects = mProjectRepository.getProjects();
     }
 
-    public LiveData<Project> getProjects() { return mProjects; }
-
-
-
+    public LiveData<List<Project>> getProjects() { return mProjects; }
+    public LiveData<List<Task>> getTasks() { return mTaskRepository.getTasks(); }
+    public void createTask(Task task) {
+        mExecutor.execute(()->{
+            mTaskRepository.createTask(task);
+        });
+    }
+    public void deleteTask(long taskId) {
+        mExecutor.execute(()->{
+            mTaskRepository.deleteTask(taskId);
+        });
+    }
 }

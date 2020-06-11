@@ -1,7 +1,6 @@
 package com.cleanup.todoc.model;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
@@ -13,20 +12,17 @@ import java.util.Comparator;
  *
  * @author Gaëtan HERFRAY
  */
-@Entity(foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns = "projectId"))
+@Entity(tableName = "task", foreignKeys = @ForeignKey(entity = Project.class, parentColumns = "id", childColumns = "projectId"))
 public class Task {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
-
-    private long projectId;
-
     // Suppress warning because setName is called in constructor
-    @SuppressWarnings("NullableProblems")
+    //@SuppressWarnings("NullableProblems")
     @NonNull
     private String name;
-
     private long creationTimestamp;
+    private long projectId;
 
     public Task(long id, long projectId, @NonNull String name, long creationTimestamp) {
         this.id = id;

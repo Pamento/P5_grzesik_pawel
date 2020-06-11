@@ -14,7 +14,10 @@ import com.cleanup.todoc.database.dao.ProjectDao;
 import com.cleanup.todoc.database.dao.TaskDao;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
+import com.cleanup.todoc.utils.Resources;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,9 +33,9 @@ public abstract class TodocDatabase extends RoomDatabase {
     private static volatile TodocDatabase INSTANCE;
 
     // --- INSTANCE ---
-    private static final int NUMBER_OF_THREADS = 4;
-    static final ExecutorService databaseWriteExecutor =
-            Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+//    private static final int NUMBER_OF_THREADS = 4;
+//    static final ExecutorService databaseWriteExecutor =
+//            Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     static TodocDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -41,44 +44,25 @@ public abstract class TodocDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             TodocDatabase.class, "todoc_database")
                             .build();
+                    INSTANCE.populateInitialData();
                 }
             }
         }
         return INSTANCE;
     }
 
-    private static Callback populateDatabaseWithProjects() {
-        return new Callback() {
-            @Override
-            public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                super.onCreate(db);
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("id", 1L);
-                contentValues.put("name","Projet Tartampion");
-                contentValues.put("color", 0xFFEADAD1);
-//                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-//                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-//                new Project(3L, "Projet Circus", 0xFFA3CED2),
-                db.insert("Project", OnConflictStrategy.IGNORE,contentValues);
-            }
-        };
-    }
-
     /**
-     * Other way to prepopulate the database;
+     * Prepopulate the database if the "project" table is empty.
      */
-//    private void populateInitialData() {
-//        if (cheese().count() == 0) {
-//            runInTransaction(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Project project = new Project();
-//                    for (int i = 0; i < Cheese.CHEESES.length; i++) {
-//                        cheese.name = Cheese.CHEESES[i];
-//                        cheese().insert(cheese);
-//                    }
-//                }
-//            });
-//        }
-//    }
+    private void populateInitialData() {
+        if (projectDao().count() == 0) {
+            runInTransaction(() -> {
+                Project[] projects = Resources.allProjects;
+
+                for (Project project : projects) {
+                    projectDao().insertProject(project);
+                }
+            });
+        }
+    }
 }

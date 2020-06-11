@@ -52,7 +52,7 @@ public class TaskDaoTest {
 
     @Test
     public void insertAndGetProject() throws InterruptedException {
-        mDatabase.projectDao().createProject(PROJECT_FOR_TESTS);
+        mDatabase.projectDao().insertProject(PROJECT_FOR_TESTS);
         Project project = LiveDataTestUtils.getValue(mDatabase.projectDao().getProject(PROJECT_ID));
         assertTrue(project.getName().equals(PROJECT_FOR_TESTS.getName()) && project.getId() == PROJECT_ID);
     }
@@ -65,7 +65,7 @@ public class TaskDaoTest {
 
     @Test
     public void insertAndGetTasks() throws InterruptedException {
-        mDatabase.projectDao().createProject(PROJECT_FOR_TESTS);
+        mDatabase.projectDao().insertProject(PROJECT_FOR_TESTS);
         mDatabase.mTaskDao().insertTask(NEW_TASK_ONE);
         mDatabase.mTaskDao().insertTask(NEW_TASK_TWO);
         mDatabase.mTaskDao().insertTask(NEW_TASK_TREE);
@@ -76,7 +76,7 @@ public class TaskDaoTest {
 
     @Test
     public void insertAndDeleteTask() throws InterruptedException {
-        mDatabase.projectDao().createProject(PROJECT_FOR_TESTS);
+        mDatabase.projectDao().insertProject(PROJECT_FOR_TESTS);
         mDatabase.mTaskDao().insertTask(NEW_TASK_TWO);
         Task taskAdded = LiveDataTestUtils.getValue(mDatabase.mTaskDao().getTasks(PROJECT_ID)).get(0);
         mDatabase.mTaskDao().deleteTask(taskAdded.getId());

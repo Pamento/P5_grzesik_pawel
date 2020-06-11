@@ -35,7 +35,7 @@ import java.util.Date;
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
     /**
-     * TODO Replace allProjects array by allProjects MainActivityViewModel
+     * TODO Replace allProjects array by allProjects MainViewModel
      */
     private final Project[] allProjects = new Project[]{
                 new Project(1L, "Projet Tartampion", 0xFFEADAD1),

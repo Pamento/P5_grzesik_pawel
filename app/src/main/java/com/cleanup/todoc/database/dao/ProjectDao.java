@@ -8,14 +8,20 @@ import androidx.room.Query;
 
 import com.cleanup.todoc.model.Project;
 
+import java.util.List;
+
 @Dao
 public interface ProjectDao {
+
+    @Query("SELECT COUNT(*) FROM project")
+    int count();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void createProject(Project project);
+    void insertProject(Project project);
 
     @Query("SELECT * FROM Project WHERE id = :projectId")
     LiveData<Project> getProject(long projectId);
 
     @Query("SELECT * FROM Project")
-    LiveData<Project> getProjects();
+    LiveData<List<Project>> getProjects();
 }
