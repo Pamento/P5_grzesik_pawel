@@ -20,6 +20,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         mExecutor = executor;
     }
 
+    //
+    @SuppressWarnings("unchecked cast")
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
