@@ -23,7 +23,7 @@ public class MainViewModel extends ViewModel {
         mExecutor = executor;
     }
 
-    public void init(long projectID) {
+    public void init() {
         if (mProjects != null) {
             return;
         }

@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,12 +22,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cleanup.todoc.R;
+import com.cleanup.todoc.di.Injection;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -34,14 +39,16 @@ import java.util.Date;
  * @author Gaëtan HERFRAY
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
+
+    private MainViewModel mMainViewModel;
     /**
      * TODO Replace allProjects array by allProjects MainViewModel
      */
-    private final Project[] allProjects = new Project[]{
-                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-                new Project(3L, "Projet Circus", 0xFFA3CED2),
-        };
+//    private final Project[] allProjects = new Project[]{
+//                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
+//                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
+//                new Project(3L, "Projet Circus", 0xFFA3CED2),
+//        };
 
     @NonNull
     private final ArrayList<Task> tasks = new ArrayList<>();
@@ -91,7 +98,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 showAddTaskDialog();
             }
         });
+        configureViewModel();
     }
+    private void configureViewModel(){
+        ViewModelFactory mViewModelFactory = Injection.provideViewModelFactory(this);
+        this.mMainViewModel = new ViewModelProvider(this, mViewModelFactory).get(MainViewModel.class);
+        this.mMainViewModel.init();
+    }
+
+    private final LiveData<List<Project>> allProjects = Objects.requireNonNull(mMainViewModel).getProjects();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -273,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Sets the data of the Spinner with projects to associate to a new task
      */
     private void populateDialogSpinner() {
-        final ArrayAdapter adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_spinner_item, allProjects);
+        final ArrayAdapter adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_spinner_item, (List<Project>) allProjects);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         if (dialogSpinner != null) {
             dialogSpinner.setAdapter(adapter);

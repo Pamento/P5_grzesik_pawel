@@ -20,7 +20,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         mExecutor = executor;
     }
 
-    //
     @SuppressWarnings("unchecked cast")
     @NonNull
     @Override
