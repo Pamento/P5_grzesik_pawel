@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,6 +42,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
     private MainViewModel mMainViewModel;
+    private List<Project> allProjects;
     /**
      * TODO Replace allProjects array by allProjects MainViewModel
      */
@@ -92,13 +94,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
 
-        findViewById(R.id.fab_add_task).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAddTaskDialog();
-            }
-        });
+        findViewById(R.id.fab_add_task).setOnClickListener(view -> showAddTaskDialog());
         configureViewModel();
+        getProjects();
     }
     private void configureViewModel(){
         ViewModelFactory mViewModelFactory = Injection.provideViewModelFactory(this);
@@ -106,7 +104,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         this.mMainViewModel.init();
     }
 
-    private final LiveData<List<Project>> allProjects = Objects.requireNonNull(mMainViewModel).getProjects();
+    private void getProjects() {
+        mMainViewModel.getProjects().observe(this, projects -> allProjects = projects);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Sets the data of the Spinner with projects to associate to a new task
      */
     private void populateDialogSpinner() {
-        final ArrayAdapter adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_spinner_item, (List<Project>) allProjects);
+        final ArrayAdapter adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_spinner_item, allProjects);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         if (dialogSpinner != null) {
             dialogSpinner.setAdapter(adapter);
