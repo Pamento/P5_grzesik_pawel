@@ -1,7 +1,5 @@
 package com.cleanup.todoc.database.dao;
 
-import android.database.Cursor;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -11,6 +9,9 @@ import com.cleanup.todoc.model.Task;
 
 import java.util.List;
 
+/**
+ * Class of request for SQLite for Task table in "todoc_database".
+ */
 @Dao
 public interface TaskDao {
     @Query("SELECT * FROM task WHERE projectId = :projectId")
@@ -24,7 +25,4 @@ public interface TaskDao {
 
     @Query("DELETE FROM task WHERE id = :taskId")
     void deleteTask(long taskId);
-
-    @Query("SELECT * FROM task WHERE projectId = :projectId")
-    Cursor getTasksWithCursor(long projectId);
 }

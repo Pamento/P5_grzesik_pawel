@@ -17,8 +17,6 @@ public class Task {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
-    // Suppress warning because setName is called in constructor
-    //@SuppressWarnings("NullableProblems")
     @NonNull
     private String name;
     private long creationTimestamp;
@@ -30,39 +28,6 @@ public class Task {
         this.name = name;
         this.creationTimestamp = creationTimestamp;
     }
-//    public Task(long id, long projectId, @NonNull String name, long creationTimestamp) {
-//        this.setId(id);
-//        this.setProjectId(projectId);
-//        this.setName(name);
-//        this.setCreationTimestamp(creationTimestamp);
-//    }
-//
-//    private void setId(long id) {
-//        this.id = id;
-//    }
-//
-//    private void setProjectId(long projectId) {
-//        this.projectId = projectId;
-//    }
-//
-//    @Nullable
-//    public Project getProject() {
-//        return Project.getProjectById(projectId);
-//    }
-//
-//    @NonNull
-//    public String getName() {
-//        return name;
-//    }
-//
-//    private void setName(@NonNull String name) {
-//        this.name = name;
-//    }
-//
-//    private void setCreationTimestamp(long creationTimestamp) {
-//        this.creationTimestamp = creationTimestamp;
-//    }
-
 
     public long getId() {
         return id;
@@ -76,10 +41,6 @@ public class Task {
         return projectId;
     }
 
-    public void setProjectId(long projectId) {
-        this.projectId = projectId;
-    }
-
     @NonNull
     public String getName() {
         return name;
@@ -91,10 +52,6 @@ public class Task {
 
     public long getCreationTimestamp() {
         return creationTimestamp;
-    }
-
-    public void setCreationTimestamp(long creationTimestamp) {
-        this.creationTimestamp = creationTimestamp;
     }
 
     public static class TaskAZComparator implements Comparator<Task> {

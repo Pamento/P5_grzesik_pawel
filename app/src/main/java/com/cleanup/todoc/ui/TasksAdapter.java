@@ -21,6 +21,8 @@ import java.util.List;
  * @author Gaëtan HERFRAY
  */
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
+
+    private MainViewModel mMainViewModel;
     /**
      * The list of tasks the adapter deals with
      */
@@ -105,13 +107,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             lblProjectName = itemView.findViewById(R.id.lbl_project_name);
             imgDelete = itemView.findViewById(R.id.img_delete);
 
-            imgDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final Object tag = view.getTag();
-                    if (tag instanceof Task) {
-                        TaskViewHolder.this.deleteTaskListener.onDeleteTask((Task) tag);
-                    }
+            imgDelete.setOnClickListener(view -> {
+                final Object tag = view.getTag();
+                if (tag instanceof Task) {
+                    TaskViewHolder.this.deleteTaskListener.onDeleteTask((Task) tag);
                 }
             });
         }
@@ -125,14 +124,16 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             lblTaskName.setText(task.getName());
             imgDelete.setTag(task);
 
-//            final Project taskProject = task.getProject();
-//            if (taskProject != null) {
-//                imgProject.setSupportImageTintList(ColorStateList.valueOf(taskProject.getColor()));
-//                lblProjectName.setText(taskProject.getName());
-//            } else {
-//                imgProject.setVisibility(View.INVISIBLE);
-//                lblProjectName.setText("");
-//            }
+            final long taskProjectId = task.getProjectId();
+            Project project = MainActivity.sAllProjects.get((int)taskProjectId -1);
+
+            if (project != null) {
+                imgProject.setSupportImageTintList(ColorStateList.valueOf(project.getColor()));
+                lblProjectName.setText(project.getName());
+            } else {
+                imgProject.setVisibility(View.INVISIBLE);
+                lblProjectName.setText("");
+            }
 
         }
     }

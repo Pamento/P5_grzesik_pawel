@@ -10,11 +10,11 @@ import com.cleanup.todoc.model.Project;
 
 import java.util.List;
 
+/**
+ * Class of request for SQLite for Project table in "todoc_database".
+ */
 @Dao
 public interface ProjectDao {
-
-    @Query("SELECT COUNT(*) FROM project")
-    int count();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertProject(Project project);

@@ -7,8 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -42,23 +39,12 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
     private MainViewModel mMainViewModel;
-    private List<Project> allProjects;
-    /**
-     * TODO Replace allProjects array by allProjects MainViewModel
-     */
-//    private final Project[] allProjects = new Project[]{
-//                new Project(1L, "Projet Tartampion", 0xFFEADAD1),
-//                new Project(2L, "Projet Lucidia", 0xFFB4CDBA),
-//                new Project(3L, "Projet Circus", 0xFFA3CED2),
-//        };
 
+    public static List<Project> sAllProjects;
     @NonNull
-    private final ArrayList<Task> tasks = new ArrayList<>();
+    private List<Task> mTasks = new ArrayList<>();
 
-    private final TasksAdapter adapter = new TasksAdapter(tasks, this);
-
-    @NonNull
-    private SortMethod sortMethod = SortMethod.NONE;
+    private final TasksAdapter adapter = new TasksAdapter(mTasks, this);
 
     @Nullable
     public AlertDialog dialog = null;
@@ -69,17 +55,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Nullable
     private Spinner dialogSpinner = null;
 
-    // Suppress warning is safe because variable is initialized in onCreate
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     private RecyclerView listTasks;
 
     /**
      * The TextView displaying the empty state
      */
-    // Suppress warning is safe because variable is initialized in onCreate
-    @SuppressWarnings("NullableProblems")
-    @NonNull
     private TextView lblNoTasks;
 
     @Override
@@ -97,15 +77,23 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         findViewById(R.id.fab_add_task).setOnClickListener(view -> showAddTaskDialog());
         configureViewModel();
         getProjects();
+        getTasks();
     }
-    private void configureViewModel(){
+
+    private void configureViewModel() {
         ViewModelFactory mViewModelFactory = Injection.provideViewModelFactory(this);
         this.mMainViewModel = new ViewModelProvider(this, mViewModelFactory).get(MainViewModel.class);
-        this.mMainViewModel.init();
     }
 
     private void getProjects() {
-        mMainViewModel.getProjects().observe(this, projects -> allProjects = projects);
+        mMainViewModel.getProjects().observe(this, projects -> sAllProjects = projects);
+    }
+
+    private void getTasks() {
+        mMainViewModel.getTasks().observe(this, taskList -> {
+            mTasks = taskList;
+            updateTasks();
+        });
     }
 
     @Override
@@ -119,13 +107,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         int id = item.getItemId();
 
         if (id == R.id.filter_alphabetical) {
-            sortMethod = SortMethod.ALPHABETICAL;
+            mMainViewModel.sortMethod = SortMethod.ALPHABETICAL;
         } else if (id == R.id.filter_alphabetical_inverted) {
-            sortMethod = SortMethod.ALPHABETICAL_INVERTED;
+            mMainViewModel.sortMethod = SortMethod.ALPHABETICAL_INVERTED;
         } else if (id == R.id.filter_oldest_first) {
-            sortMethod = SortMethod.OLD_FIRST;
+            mMainViewModel.sortMethod = SortMethod.OLD_FIRST;
         } else if (id == R.id.filter_recent_first) {
-            sortMethod = SortMethod.RECENT_FIRST;
+            mMainViewModel.sortMethod = SortMethod.RECENT_FIRST;
         }
 
         updateTasks();
@@ -135,8 +123,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
-        updateTasks();
+        mMainViewModel.deleteTask(task.getId());
     }
 
     /**
@@ -208,36 +195,35 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        tasks.add(task);
-        updateTasks();
+        mMainViewModel.createTask(task);
     }
 
     /**
      * Updates the list of tasks in the UI
      */
     private void updateTasks() {
-        if (tasks.size() == 0) {
+        if (mTasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
         } else {
             lblNoTasks.setVisibility(View.GONE);
             listTasks.setVisibility(View.VISIBLE);
-            switch (sortMethod) {
+            switch (mMainViewModel.sortMethod) {
                 case ALPHABETICAL:
-                    Collections.sort(tasks, new Task.TaskAZComparator());
+                    Collections.sort(mTasks, new Task.TaskAZComparator());
                     break;
                 case ALPHABETICAL_INVERTED:
-                    Collections.sort(tasks, new Task.TaskZAComparator());
+                    Collections.sort(mTasks, new Task.TaskZAComparator());
                     break;
                 case RECENT_FIRST:
-                    Collections.sort(tasks, new Task.TaskRecentComparator());
+                    Collections.sort(mTasks, new Task.TaskRecentComparator());
                     break;
                 case OLD_FIRST:
-                    Collections.sort(tasks, new Task.TaskOldComparator());
+                    Collections.sort(mTasks, new Task.TaskOldComparator());
                     break;
 
             }
-            adapter.updateTasks(tasks);
+            adapter.updateTasks(mTasks);
         }
     }
 
@@ -253,32 +239,18 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         alertBuilder.setTitle(R.string.add_task);
         alertBuilder.setView(R.layout.dialog_add_task);
         alertBuilder.setPositiveButton(R.string.add, null);
-        alertBuilder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                dialogEditText = null;
-                dialogSpinner = null;
-                dialog = null;
-            }
+        alertBuilder.setOnDismissListener(dialogInterface -> {
+            dialogEditText = null;
+            dialogSpinner = null;
+            dialog = null;
         });
 
         dialog = alertBuilder.create();
 
         // This instead of listener to positive button in order to avoid automatic dismiss
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-
-                Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        onPositiveButtonClick(dialog);
-                    }
-                });
-            }
+        dialog.setOnShowListener(dialogInterface -> {
+            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view -> onPositiveButtonClick(dialog));
         });
 
         return dialog;
@@ -288,14 +260,14 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * Sets the data of the Spinner with projects to associate to a new task
      */
     private void populateDialogSpinner() {
-        final ArrayAdapter adapter = new ArrayAdapter<Project>(this, android.R.layout.simple_spinner_item, allProjects);
+        final ArrayAdapter<Project> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sAllProjects);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         if (dialogSpinner != null) {
             dialogSpinner.setAdapter(adapter);
         }
     }
 
-    private enum SortMethod {
+    enum SortMethod {
         ALPHABETICAL,
         ALPHABETICAL_INVERTED,
         RECENT_FIRST,

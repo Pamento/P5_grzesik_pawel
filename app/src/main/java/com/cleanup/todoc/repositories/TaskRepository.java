@@ -7,6 +7,9 @@ import com.cleanup.todoc.model.Task;
 
 import java.util.List;
 
+/**
+ * TaskRepository connects the Task table from database with ViewModel and UI (MainActivity).
+ */
 public class TaskRepository {
     private final TaskDao mTaskDao;
 

@@ -10,6 +10,9 @@ import com.cleanup.todoc.ui.ViewModelFactory;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * Injection class of ViewModel Class by ViewModelFactory.
+ */
 public class Injection {
     public static TaskRepository provideItemDataSource(Context context) {
         TodocDatabase database = TodocDatabase.getDatabase(context);

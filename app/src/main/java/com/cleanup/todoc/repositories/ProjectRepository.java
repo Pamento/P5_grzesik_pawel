@@ -7,6 +7,9 @@ import com.cleanup.todoc.model.Project;
 
 import java.util.List;
 
+/**
+ * ProjectRepository connects the Project table from database with ViewModel and UI (MainActivity).
+ */
 public class ProjectRepository {
     private final ProjectDao mProjectDao;
 
