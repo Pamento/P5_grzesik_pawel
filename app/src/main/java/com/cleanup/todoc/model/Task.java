@@ -22,8 +22,7 @@ public class Task {
     private long creationTimestamp;
     private long projectId;
 
-    public Task(long id, long projectId, @NonNull String name, long creationTimestamp) {
-        this.id = id;
+    public Task(long projectId, @NonNull String name, long creationTimestamp) {
         this.projectId = projectId;
         this.name = name;
         this.creationTimestamp = creationTimestamp;

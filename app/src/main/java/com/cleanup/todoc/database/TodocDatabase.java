@@ -65,13 +65,11 @@ public abstract class TodocDatabase extends RoomDatabase {
             databaseWriteExecutor.execute(() -> {
                 // Populate the database in the background. Unlimited add.
                 ProjectDao projectDao = INSTANCE.projectDao();
-                if (projectDao.getProjects() == null) {
                     Project[] projects = Resources.allProjects;
 
                     for (Project project : projects) {
                         projectDao.insertProject(project);
                     }
-                }
             });
         }
     };
