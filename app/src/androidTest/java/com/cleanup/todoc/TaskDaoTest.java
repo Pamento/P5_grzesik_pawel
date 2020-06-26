@@ -24,6 +24,13 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Instrumented test, which will execute on an Android device.
+ *
+ * @author Pawel Grzesik
+ * @see <a href="https://developer.android.com/training/data-storage/room/testing-db">
+ *     Documentation of database testing.</a>
+ */
 @RunWith(AndroidJUnit4.class)
 public class TaskDaoTest {
     private volatile TodocDatabase mDatabase;
