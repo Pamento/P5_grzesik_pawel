@@ -30,17 +30,17 @@ public class TaskDaoTest {
 
     private static long PROJECT_ID = 1L;
     private static Project PROJECT_FOR_TESTS = new Project(PROJECT_ID, "Projet Tartampion", 0xFFEADAD1);
-    private static Task NEW_TASK_ONE = new Task(1L, PROJECT_ID, "Task one", System.currentTimeMillis());
-    private static Task NEW_TASK_TWO = new Task(2L, PROJECT_ID, "Task two", System.currentTimeMillis());
-    private static Task NEW_TASK_TREE = new Task(3L, PROJECT_ID, "Task one", System.currentTimeMillis());
+    private static Task NEW_TASK_ONE = new Task(PROJECT_ID, "Task one", System.currentTimeMillis());
+    private static Task NEW_TASK_TWO = new Task(PROJECT_ID, "Task two", System.currentTimeMillis());
+    private static Task NEW_TASK_TREE = new Task(PROJECT_ID, "Task one", System.currentTimeMillis());
 
     @Rule
     public InstantTaskExecutorRule mInstantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Before
-    public void initDb() throws Exception {
+    public void initDb() {
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        mDatabase = Room.inMemoryDatabaseBuilder(context,  TodocDatabase.class)
+        mDatabase = Room.inMemoryDatabaseBuilder(context, TodocDatabase.class)
                 .allowMainThreadQueries()
                 .build();
     }
@@ -71,7 +71,7 @@ public class TaskDaoTest {
         mDatabase.mTaskDao().insertTask(NEW_TASK_TREE);
 
         List<Task> tasks = LiveDataTestUtils.getValue(mDatabase.mTaskDao().getTasks(PROJECT_ID));
-        assertEquals(3,tasks.size());
+        assertEquals(3, tasks.size());
     }
 
     @Test
@@ -84,4 +84,4 @@ public class TaskDaoTest {
         List<Task> tasks = LiveDataTestUtils.getValue(mDatabase.mTaskDao().getTasks(PROJECT_ID));
         assertTrue(tasks.isEmpty());
     }
- }
+}
